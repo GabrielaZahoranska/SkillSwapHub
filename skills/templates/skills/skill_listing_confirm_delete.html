@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/form.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Delete listing</h1>
+</div>
+
+<h2 class="warn-heading">Are you sure you want to delete "{{ object.title }}"?</h2>
+<p class="page-content">This cannot be undone.</p>
+
+<form action="" method="post" class="form-inline-actions">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-danger-solid">Yes, delete</button>
+  <a href="{% url 'skill-detail' object.pk %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

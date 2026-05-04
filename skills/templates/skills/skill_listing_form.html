@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/form.css' %}" />
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  {% if object %}
+  <h1>Edit listing</h1>
+  {% else %}
+  <h1>New skill listing</h1>
+  {% endif %}
+</div>
+
+<form action="" method="post" class="form-container">
+  {% csrf_token %}
+  <table>
+    {{ form.as_table }}
+  </table>
+  <button type="submit" class="btn btn-primary">Save</button>
+  {% if object %}
+  <a href="{% url 'skill-detail' object.pk %}" class="btn btn-secondary">Cancel</a>
+  {% else %}
+  <a href="{% url 'skill-list' %}" class="btn btn-secondary">Cancel</a>
+  {% endif %}
+</form>
+{% endblock %}

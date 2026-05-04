@@ -1,0 +1,226 @@
+/* Sitewide layout: readable type and enough contrast for WCAG AA. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  font-size: 62.5%;
+  --surface: #f8fafc;
+  --surface-raised: #ffffff;
+  --text: #0f172a;
+  --muted: #475569;
+  --border: #cbd5e1;
+  --link: #0c4a6e;
+  --link-hover: #075985;
+  --accent: #0369a1;
+  --accent-text: #ffffff;
+  --danger: #991b1b;
+  --danger-bg: #fee2e2;
+  --header-bg: #e2e8f0;
+  --focus: #0284c7;
+  --font-body: 1.6rem;
+  --font-h1: clamp(2.4rem, 4vw, 3.6rem);
+  --font-h2: 2.2rem;
+  --space: 1.6rem;
+  --radius: 8px;
+  --shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    sans-serif;
+  font-size: var(--font-body);
+  line-height: 1.55;
+  color: var(--text);
+  background: var(--surface);
+}
+
+a {
+  color: var(--link);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+a:hover {
+  color: var(--link-hover);
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.site-header {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space);
+  padding: 1.2rem 2rem;
+  background: var(--header-bg);
+  border-bottom: 2px solid var(--border);
+}
+
+.site-logo {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.site-logo:hover {
+  color: var(--link);
+}
+
+.site-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.8rem 1.6rem;
+}
+
+.site-main {
+  width: 100%;
+  max-width: 960px;
+  padding: 2.4rem 2rem 4rem;
+  flex: 1;
+}
+
+.site-nav a {
+  font-weight: 600;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.page-header h1 {
+  font-size: var(--font-h1);
+  margin: 0;
+}
+
+.page-content {
+  margin: 0;
+  margin-bottom: 1.6rem;
+  max-width: 70ch;
+}
+
+/* Shared button look — every clickable button uses this. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 4rem;
+  padding: 0 1.6rem;
+  font-size: 1.6rem;
+  font-weight: 600;
+  font-family: inherit;
+  border-radius: var(--radius);
+  border: 2px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: var(--shadow);
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--accent-text);
+  border-color: var(--accent);
+}
+
+.btn-primary:hover {
+  background: #075985;
+  border-color: #075985;
+  color: var(--accent-text);
+}
+
+.btn-secondary {
+  background: var(--surface-raised);
+  color: var(--text);
+  border-color: var(--muted);
+}
+
+.btn-secondary:hover {
+  background: #f1f5f9;
+  color: var(--text);
+}
+
+.btn-nav {
+  background: var(--surface-raised);
+  color: var(--text);
+  border: 2px solid var(--border);
+  box-shadow: none;
+  min-height: 3.6rem;
+}
+
+.btn-nav:hover {
+  border-color: var(--muted);
+  background: #f1f5f9;
+}
+
+.btn-danger-outline {
+  background: var(--surface-raised);
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+.btn-danger-outline:hover {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+.btn-danger-solid {
+  background: var(--danger);
+  color: #ffffff;
+  border-color: var(--danger);
+}
+
+.btn-danger-solid:hover {
+  background: #7f1d1d;
+  border-color: #7f1d1d;
+  color: #ffffff;
+}
+
+#logout-form {
+  margin: 0;
+  padding: 0;
+  display: inline;
+}
+
+.red-text {
+  color: var(--danger);
+}
+
+@media only screen and (min-width: 768px) {
+  .site-header {
+    padding-left: clamp(2rem, 6vw, 5rem);
+    padding-right: clamp(2rem, 6vw, 5rem);
+  }
+
+  .site-main {
+    padding-left: clamp(2rem, 6vw, 5rem);
+    padding-right: clamp(2rem, 6vw, 5rem);
+  }
+}

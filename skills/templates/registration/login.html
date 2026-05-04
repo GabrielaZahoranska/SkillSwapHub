@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/form.css' %}" />
+{% endblock %}
+
+{% block title %}Log in | SkillSwap Hub{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Log in</h1>
+</div>
+
+{% if form.errors %}
+<p class="form-error">Bad username or password. Try again.</p>
+{% endif %}
+
+<form action="{% url 'login' %}" method="post" class="form-container login-form">
+  {% csrf_token %}
+  <table>{{ form.as_table }}</table>
+  <input type="hidden" name="next" value="{{ next }}" />
+  <button type="submit" class="btn btn-primary">Log in</button>
+</form>
+
+<p class="form-extra">Need an account? <a href="{% url 'signup' %}">Sign up</a>.</p>
+{% endblock %}

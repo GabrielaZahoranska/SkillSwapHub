@@ -1,0 +1,76 @@
+.form-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 1.6rem;
+}
+
+.form-inline-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.form-container table {
+  border-spacing: 0 1.6rem;
+}
+
+td,
+th {
+  vertical-align: top;
+  padding-right: 1.2rem;
+  font-size: var(--font-body);
+}
+
+th {
+  font-weight: 600;
+  text-align: left;
+  width: 12rem;
+}
+
+td > input,
+td > textarea,
+td > select {
+  width: 100%;
+  max-width: min(52rem, 100%);
+  padding: 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 1.6rem;
+  font-family: inherit;
+  color: var(--text);
+  background: var(--surface-raised);
+}
+
+td > textarea {
+  min-height: 12rem;
+  resize: vertical;
+}
+
+.login-form .btn {
+  align-self: flex-start;
+}
+
+.form-error {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.warn-heading {
+  color: var(--danger);
+}
+
+.form-extra {
+  margin-top: 1rem;
+}
+
+.page-header .btn {
+  box-shadow: var(--shadow);
+}

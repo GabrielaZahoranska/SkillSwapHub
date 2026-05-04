@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Env & local secrets
+.env
+.env.*
+!.env.example
+
+# Django
+staticfiles/
+media/
+db.sqlite3
+*.log
+
+# Virtualenv (if not using pipenv only)
+venv/
+.venv/
+
+# IDE
+.idea/
+*.swp
+
+# OS
+.DS_Store

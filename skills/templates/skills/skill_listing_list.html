@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/skills.css' %}" />
+{% endblock %}
+{% block title %}All skills | SkillSwap Hub{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>All skill listings</h1>
+</div>
+
+{% if skill_listings %}
+<ul class="skill-grid" role="list">
+  {% for listing in skill_listings %}
+  <li class="skill-card">
+    <h2><a href="{% url 'skill-detail' listing.pk %}">{{ listing.title }}</a></h2>
+    <p class="skill-category">{{ listing.category.name }}</p>
+    <p class="skill-desc">{{ listing.description|truncatewords:28 }}</p>
+    <p class="skill-author">Teacher: {{ listing.user.username }}</p>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No listings yet. {% if user.is_authenticated %}<a href="{% url 'skill-create' %}">Create one</a>{% endif %}</p>
+{% endif %}
+{% endblock %}

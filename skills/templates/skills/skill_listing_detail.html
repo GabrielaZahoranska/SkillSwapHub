@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/skills.css' %}" />
+{% endblock %}
+
+{% block title %}{{ object.title }} | SkillSwap Hub{% endblock %}
+
+{% block content %}
+<article class="detail-card">
+  <header class="detail-header">
+    <h1>{{ object.title }}</h1>
+    <p class="detail-meta">{{ object.category.name }} · posted {{ object.created_at|date:"M j, Y" }}</p>
+  </header>
+
+  <div class="detail-body">
+    <h2 class="detail-subheading">Description</h2>
+    <p class="detail-text">{{ object.description|linebreaksbr }}</p>
+  </div>
+
+  <section class="contact-panel" aria-labelledby="contact-heading">
+    <h2 id="contact-heading">Contact teacher</h2>
+    <p><span class="label">Username</span> {{ object.user.username }}</p>
+    <p>
+      <span class="label">Email</span>
+      {% if object.user.email %}
+      <a href="mailto:{{ object.user.email }}">{{ object.user.email }}</a>
+      {% else %}
+      <span class="muted">No email on file yet</span>
+      {% endif %}
+    </p>
+  </section>
+
+  {% if user.is_authenticated and object.user_id == user.id %}
+  <div class="detail-actions">
+    <a href="{% url 'skill-update' object.pk %}" class="btn btn-secondary">Edit</a>
+    <a href="{% url 'skill-delete' object.pk %}" class="btn btn-danger-outline">Delete</a>
+  </div>
+  {% endif %}
+</article>
+{% endblock %}

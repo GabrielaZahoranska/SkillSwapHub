@@ -1,0 +1,38 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+    <title>{% block title %}SkillSwap Hub{% endblock %}</title>
+    {% block head %}{% endblock %}
+  </head>
+  <body>
+    <header class="site-header">
+      <a href="{% url 'home' %}" class="site-logo">SkillSwap Hub</a>
+      <nav class="site-nav" aria-label="Main">
+        <ul>
+          <li><a href="{% url 'skill-list' %}">All skills</a></li>
+          <li><a href="{% url 'about' %}">About</a></li>
+          {% if user.is_authenticated %}
+          <li><a href="{% url 'skill-create' %}">Add listing</a></li>
+          <li>
+            <form id="logout-form" method="post" action="{% url 'logout' %}">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-nav">Log out</button>
+            </form>
+          </li>
+          {% else %}
+          <li><a href="{% url 'login' %}">Log in</a></li>
+          <li><a href="{% url 'signup' %}">Sign up</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    </header>
+    <main class="site-main">
+      {% block content %}{% endblock %}
+    </main>
+  </body>
+</html>

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/landing.css' %}" />
+{% endblock %}
+
+{% block content %}
+<section class="hero" aria-labelledby="hero-heading">
+  <h1 id="hero-heading">Trade skills with people near you</h1>
+  <p class="hero-lede">
+    Post what you teach, browse what others offer, and get in touch to swap knowledge.
+  </p>
+  <div class="hero-actions">
+    <a href="{% url 'signup' %}" class="btn btn-primary">Join now</a>
+    <a href="{% url 'skill-list' %}" class="btn btn-secondary">Browse skills</a>
+  </div>
+</section>
+
+<section class="preview" aria-labelledby="preview-heading">
+  <h2 id="preview-heading">Recent listings</h2>
+  {% if recent_skills %}
+  <div class="card-grid">
+    {% for listing in recent_skills %}
+    <article class="card">
+      <h3><a href="{% url 'skill-detail' listing.pk %}">{{ listing.title }}</a></h3>
+      <p class="card-meta">{{ listing.category.name }}</p>
+      <p class="card-teaser">{{ listing.description|truncatewords:22 }}</p>
+    </article>
+    {% endfor %}
+  </div>
+  <p class="preview-more"><a href="{% url 'skill-list' %}">See all skills</a></p>
+  {% else %}
+  <p>Nobody has posted yet. Sign up and add the first one.</p>
+  {% endif %}
+</section>
+{% endblock %}
