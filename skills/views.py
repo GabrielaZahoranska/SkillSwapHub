@@ -4,10 +4,10 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth import login
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 
+from .forms import SignUpForm
 from .models import SkillListing
 
 
@@ -69,14 +69,14 @@ class SkillListingDelete(LoginRequiredMixin, SkillListingOwnerMixin, DeleteView)
 def signup(request):
     error_message = ''
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
             return redirect('skill-list')
         else:
-            error_message = 'Invalid sign up - try again'
+            error_message = 'Invalid sign up — check the fields below and try again.'
 
-    form = UserCreationForm()
+    form = SignUpForm()
     context = {'form': form, 'error_message': error_message}
     return render(request, 'signup.html', context)
