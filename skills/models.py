@@ -22,6 +22,12 @@ class SkillListing(models.Model):
     """One post: what I teach, written by a logged-in user."""
     title = models.CharField(max_length=200)
     description = models.TextField()
+    contact_email = models.EmailField(
+        'contact email',
+        blank=True,
+        default='',
+        help_text='Shown on your listing so people can reach you.',
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)

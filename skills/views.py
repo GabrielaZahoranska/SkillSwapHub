@@ -3,11 +3,14 @@
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.contrib import messages
 from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
+from django.contrib.auth.models import User
 
-from .forms import SignUpForm
+from .forms import SignUpForm, UserEmailUpdateForm, SkillListingForm
 from .models import SkillListing
 
 
@@ -35,15 +38,28 @@ class SkillListingDetail(DetailView):
     template_name = 'skills/skill_listing_detail.html'
 
 
+def _sync_user_email_from_listing(listing_owner_pk, listing_email):
+    """If auth User still has empty email, copy the listing email (one-time fill)."""
+    listing_email = (listing_email or '').strip().lower()
+    if not listing_email:
+        return
+    owner = User.objects.filter(pk=listing_owner_pk).only('email').first()
+    if owner and not (owner.email or '').strip():
+        User.objects.filter(pk=listing_owner_pk).update(email=listing_email)
+
+
 class SkillListingCreate(LoginRequiredMixin, CreateView):
     model = SkillListing
-    fields = ['title', 'category', 'description']
+    form_class = SkillListingForm
     template_name = 'skills/skill_listing_form.html'
 
     def form_valid(self, form):
-        # Tie the listing to whoever is logged in
         form.instance.user = self.request.user
-        return super().form_valid(form)
+        response = super().form_valid(form)
+        _sync_user_email_from_listing(
+            self.request.user.pk, form.cleaned_data.get('contact_email', '')
+        )
+        return response
 
 
 class SkillListingOwnerMixin(UserPassesTestMixin):
@@ -56,8 +72,15 @@ class SkillListingOwnerMixin(UserPassesTestMixin):
 
 class SkillListingUpdate(LoginRequiredMixin, SkillListingOwnerMixin, UpdateView):
     model = SkillListing
-    fields = ['title', 'category', 'description']
+    form_class = SkillListingForm
     template_name = 'skills/skill_listing_form.html'
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        _sync_user_email_from_listing(
+            form.instance.user_id, form.cleaned_data.get('contact_email', '')
+        )
+        return response
 
 
 class SkillListingDelete(LoginRequiredMixin, SkillListingOwnerMixin, DeleteView):
@@ -66,17 +89,33 @@ class SkillListingDelete(LoginRequiredMixin, SkillListingOwnerMixin, DeleteView)
     success_url = reverse_lazy('skill-list')
 
 
+@login_required
+def profile_email(request):
+    if request.method == 'POST':
+        form = UserEmailUpdateForm(request.POST, instance=request.user, user=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your email was saved.')
+            return redirect('profile-email')
+    else:
+        form = UserEmailUpdateForm(instance=request.user, user=request.user)
+    return render(request, 'profile_email.html', {'form': form})
+
+
 def signup(request):
-    error_message = ''
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
             return redirect('skill-list')
-        else:
-            error_message = 'Invalid sign up — check the fields below and try again.'
+    else:
+        form = SignUpForm()
 
-    form = SignUpForm()
-    context = {'form': form, 'error_message': error_message}
-    return render(request, 'signup.html', context)
+    return render(
+        request,
+        'signup.html',
+        {
+            'form': form,
+        },
+    )

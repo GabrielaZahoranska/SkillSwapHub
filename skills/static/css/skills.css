@@ -39,6 +39,12 @@
   color: var(--muted);
 }
 
+.skill-email {
+  margin: 0.8rem 0 0;
+  font-size: 1.5rem;
+  word-break: break-word;
+}
+
 .detail-card {
   background: var(--surface-raised);
   border: 1px solid var(--border);

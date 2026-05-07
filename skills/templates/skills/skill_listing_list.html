@@ -17,7 +17,17 @@
     <h2><a href="{% url 'skill-detail' listing.pk %}">{{ listing.title }}</a></h2>
     <p class="skill-category">{{ listing.category.name }}</p>
     <p class="skill-desc">{{ listing.description|truncatewords:28 }}</p>
-    <p class="skill-author">Teacher: {{ listing.user.username }}</p>
+    <p class="skill-author">Teacher: {{ listing.user.email|default:listing.user.username }}</p>
+    <p class="skill-email">
+      <span class="label">Contact</span>
+      {% if listing.contact_email %}
+      <a href="mailto:{{ listing.contact_email }}">{{ listing.contact_email }}</a>
+      {% elif listing.user.email %}
+      <a href="mailto:{{ listing.user.email }}">{{ listing.user.email }}</a>
+      {% else %}
+      <span class="muted">No email listed</span>
+      {% endif %}
+    </p>
   </li>
   {% endfor %}
 </ul>

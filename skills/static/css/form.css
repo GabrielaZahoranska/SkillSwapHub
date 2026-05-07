@@ -74,3 +74,56 @@ td > textarea {
 .page-header .btn {
   box-shadow: var(--shadow);
 }
+
+/* Listing / signup — visible sections and field help */
+.form-section {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.6rem 1.8rem;
+  background: var(--surface-raised);
+  margin-bottom: 2rem;
+}
+
+.form-section.contact-first {
+  border-width: 2px;
+  border-color: var(--accent);
+}
+
+.form-section-title {
+  margin: 0 0 0.8rem;
+  font-size: 1.9rem;
+}
+
+.section-hint {
+  margin: 0 0 1.2rem;
+  color: var(--muted);
+  font-size: 1.5rem;
+  max-width: 55ch;
+}
+
+.field-help {
+  margin: 0.6rem 0 0;
+  font-size: 1.4rem;
+  color: var(--muted);
+}
+
+.form-actions-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.form-grid ul.errorlist {
+  margin: 0 0 0.8rem;
+  padding-left: 1.6rem;
+  color: var(--danger);
+  font-size: 1.4rem;
+}
+
+.contact-email-line .label,
+.skill-email .label {
+  font-weight: 700;
+  margin-right: 0.5rem;
+}

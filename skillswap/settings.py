@@ -1,26 +1,80 @@
 """
 Django settings for SkillSwap Hub (project package: skillswap).
 
-https://docs.djangoproject.com/en/stable/topics/settings/
+Local: Postgres + optional .env (python-dotenv).
+Render: set DATABASE_URL, SECRET_KEY, etc. in the Render dashboard.
 """
 
 import os
 from pathlib import Path
 
+import dj_database_url
+from dotenv import load_dotenv
+
+load_dotenv()
+
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+ON_RENDER = os.environ.get('RENDER', '').lower() == 'true'
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME', '')
 
 SECRET_KEY = os.environ.get(
     'SECRET_KEY',
-    '4ZxSMUJ4glCAfnNkDdJ6X1hxbsPP_yzzghBOPa_Awp05plQ8IE9s_SxOV_7FEfLUNCY',
+    'django-insecure-local-only-set-SECRET_KEY-in-env-for-production',
 )
 
-DEBUG = os.environ.get('DEBUG', 'True').lower() in ('true', '1', 'yes')
+if ON_RENDER and not SECRET_KEY:
+    raise ValueError('Set SECRET_KEY in Render environment variables.')
 
-ALLOWED_HOSTS = [
-    h.strip()
-    for h in os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
-    if h.strip()
-]
+DEBUG = (
+    False
+    if ON_RENDER
+    else os.environ.get('DEBUG', 'True').lower() in ('true', '1', 'yes')
+)
+
+if ON_RENDER:
+    allowed = []
+    if os.environ.get('ALLOWED_HOSTS'):
+        allowed.extend(
+            h.strip()
+            for h in os.environ['ALLOWED_HOSTS'].split(',')
+            if h.strip()
+        )
+    if RENDER_EXTERNAL_HOSTNAME and RENDER_EXTERNAL_HOSTNAME not in allowed:
+        allowed.append(RENDER_EXTERNAL_HOSTNAME)
+    ALLOWED_HOSTS = allowed if allowed else ['*']
+else:
+    ALLOWED_HOSTS = [
+        h.strip()
+        for h in os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+        if h.strip()
+    ]
+
+DATABASE_URL = os.environ.get('DATABASE_URL')
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=DATABASE_URL,
+            conn_max_age=600,
+            conn_health_checks=True,
+            ssl_require=True,
+        ),
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ.get(
+                'DATABASE_NAME', os.environ.get('PGDATABASE', 'skillswaphub')
+            ),
+            'USER': os.environ.get('DATABASE_USER', os.environ.get('PGUSER', '')),
+            'PASSWORD': os.environ.get(
+                'DATABASE_PASSWORD', os.environ.get('PGPASSWORD', '')
+            ),
+            'HOST': os.environ.get('DATABASE_HOST', os.environ.get('PGHOST', 'localhost')),
+            'PORT': os.environ.get('DATABASE_PORT', os.environ.get('PGPORT', '5432')),
+        }
+    }
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -34,6 +88,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -41,6 +96,17 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+if ON_RENDER:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    if os.environ.get('CSRF_TRUSTED_ORIGINS'):
+        CSRF_TRUSTED_ORIGINS = [
+            o.strip()
+            for o in os.environ['CSRF_TRUSTED_ORIGINS'].split(',')
+            if o.strip()
+        ]
+    elif RENDER_EXTERNAL_HOSTNAME:
+        CSRF_TRUSTED_ORIGINS = [f'https://{RENDER_EXTERNAL_HOSTNAME}']
 
 ROOT_URLCONF = 'skillswap.urls'
 
@@ -61,17 +127,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'skillswap.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DATABASE_NAME', os.environ.get('PGDATABASE', 'skillswaphub')),
-        'USER': os.environ.get('DATABASE_USER', os.environ.get('PGUSER', '')),
-        'PASSWORD': os.environ.get('DATABASE_PASSWORD', os.environ.get('PGPASSWORD', '')),
-        'HOST': os.environ.get('DATABASE_HOST', os.environ.get('PGHOST', 'localhost')),
-        'PORT': os.environ.get('DATABASE_PORT', os.environ.get('PGPORT', '5432')),
-    }
-}
-
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -86,6 +141,15 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STORAGES = {
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+    },
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedStaticFilesStorage',
+    },
+}
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = 'login'

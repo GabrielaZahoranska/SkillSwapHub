@@ -10,14 +10,27 @@
   <h1>Sign up</h1>
 </div>
 
-{% if error_message %}
-<p class="form-error">{{ error_message }}</p>
-{% endif %}
-
 <form action="" method="post" class="form-container" autocomplete="off">
   {% csrf_token %}
-  <table>
-    {{ form.as_table }}
+  {{ form.non_field_errors }}
+
+  <table class="form-grid">
+    <tr>
+      <th>{{ form.username.label_tag }}</th>
+      <td>
+        {{ form.username.errors }}
+        {{ form.username }}
+        {% if form.username.help_text %}<p class="field-help">{{ form.username.help_text }}</p>{% endif %}
+      </td>
+    </tr>
+    <tr>
+      <th>{{ form.password1.label_tag }}</th>
+      <td>{{ form.password1.errors }}{{ form.password1 }}</td>
+    </tr>
+    <tr>
+      <th>{{ form.password2.label_tag }}</th>
+      <td>{{ form.password2.errors }}{{ form.password2 }}</td>
+    </tr>
   </table>
   <button type="submit" class="btn btn-primary">Create account</button>
 </form>

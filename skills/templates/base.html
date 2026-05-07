@@ -18,6 +18,7 @@
           <li><a href="{% url 'about' %}">About</a></li>
           {% if user.is_authenticated %}
           <li><a href="{% url 'skill-create' %}">Add listing</a></li>
+          <li><a href="{% url 'profile-email' %}">My email</a></li>
           <li>
             <form id="logout-form" method="post" action="{% url 'logout' %}">
               {% csrf_token %}

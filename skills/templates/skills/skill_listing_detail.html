@@ -20,15 +20,22 @@
 
   <section class="contact-panel" aria-labelledby="contact-heading">
     <h2 id="contact-heading">Contact teacher</h2>
-    <p><span class="label">Username</span> {{ object.user.username }}</p>
-    <p>
-      <span class="label">Email</span>
-      {% if object.user.email %}
+    <p><span class="label">Teacher email</span> {{ object.user.email|default:object.user.username }}</p>
+    <p class="contact-email-line">
+      <span class="label">Listed contact</span>
+      {% if object.contact_email %}
+      <a href="mailto:{{ object.contact_email }}">{{ object.contact_email }}</a>
+      {% elif object.user.email %}
       <a href="mailto:{{ object.user.email }}">{{ object.user.email }}</a>
       {% else %}
-      <span class="muted">No email on file yet</span>
+      <span class="muted">No contact email yet</span>
       {% endif %}
     </p>
+    {% if not object.contact_email and not object.user.email and user.is_authenticated and object.user_id == user.id %}
+    <p class="muted">
+      <a href="{% url 'skill-update' object.pk %}">Edit your listing</a> and add a contact email, or use <a href="{% url 'profile-email' %}">My email</a>.
+    </p>
+    {% endif %}
   </section>
 
   {% if user.is_authenticated and object.user_id == user.id %}

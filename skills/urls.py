@@ -10,4 +10,5 @@ urlpatterns = [
     path('skills/<int:pk>/update/', views.SkillListingUpdate.as_view(), name='skill-update'),
     path('skills/<int:pk>/delete/', views.SkillListingDelete.as_view(), name='skill-delete'),
     path('accounts/signup/', views.signup, name='signup'),
+    path('accounts/my-email/', views.profile_email, name='profile-email'),
 ]

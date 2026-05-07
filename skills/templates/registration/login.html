@@ -12,12 +12,22 @@
 </div>
 
 {% if form.errors %}
-<p class="form-error">Bad username or password. Try again.</p>
+<p class="form-error">Bad email address or password. Try again.</p>
 {% endif %}
 
 <form action="{% url 'login' %}" method="post" class="form-container login-form">
   {% csrf_token %}
-  <table>{{ form.as_table }}</table>
+  {{ form.non_field_errors }}
+  <table class="form-grid">
+    <tr>
+      <th>{{ form.username.label_tag }}</th>
+      <td>{{ form.username.errors }}{{ form.username }}</td>
+    </tr>
+    <tr>
+      <th>{{ form.password.label_tag }}</th>
+      <td>{{ form.password.errors }}{{ form.password }}</td>
+    </tr>
+  </table>
   <input type="hidden" name="next" value="{{ next }}" />
   <button type="submit" class="btn btn-primary">Log in</button>
 </form>
