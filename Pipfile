@@ -13,5 +13,4 @@ dj-database-url = "*"
 
 [dev-packages]
 
-[requires]
-python_version = "3.11"
+# Don't pin strictly here — Render may use PYTHON_VERSION env (set 3.11.9 in dashboard).
